@@ -4,6 +4,7 @@
   "description": "GitHub Action to convert XML test results to HTML reports",
   "main": "index.js",
   "scripts": {
+    "build": "ncc build index.js -o dist",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
@@ -18,6 +19,9 @@
   "license": "MIT",
   "dependencies": {
     "@actions/core": "^1.10.1"
+  },
+  "devDependencies": {
+    "@vercel/ncc": "^0.38.1"
   },
   "engines": {
     "node": ">=18"

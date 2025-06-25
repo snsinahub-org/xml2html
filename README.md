@@ -255,6 +255,26 @@ This action supports standard JUnit/TestNG XML formats with the following struct
 </testsuites>
 ```
 
+## Development
+
+This action uses a bundled approach for deployment. When making changes to the source code:
+
+1. Install dependencies:
+   ```bash
+   npm install
+   ```
+
+2. Make your changes to `index.js` or other source files
+
+3. Build the bundled version:
+   ```bash
+   npm run build
+   ```
+
+4. Commit both the source changes and the updated `dist/index.js` file
+
+The `dist/` directory contains the bundled version that GitHub Actions actually runs, so it must be kept in version control.
+
 ## License
 
 MIT License - see [LICENSE](LICENSE) file for details.
