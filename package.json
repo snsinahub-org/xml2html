@@ -1,0 +1,25 @@
+{
+  "name": "xml2html-action",
+  "version": "1.0.0",
+  "description": "GitHub Action to convert XML test results to HTML reports",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "github-action",
+    "xml",
+    "html",
+    "test-results",
+    "junit",
+    "testing"
+  ],
+  "author": "snsinahub",
+  "license": "MIT",
+  "dependencies": {
+    "@actions/core": "^1.10.1"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

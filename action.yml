@@ -1,0 +1,55 @@
+name: 'XML to HTML Converter'
+description: 'Convert XML test results to beautifully formatted HTML reports'
+branding:
+  icon: 'file-text'
+  color: 'blue'
+
+inputs:
+  xml-file:
+    description: 'Path to the XML file to convert (can be relative or absolute path)'
+    required: true
+  output-type:
+    description: 'Output type: "file" to generate HTML files, "code" to return HTML as output'
+    required: false
+    default: 'file'
+  output-format:
+    description: 'HTML format: "full", "table", "summary", "compact", or "all"'
+    required: false
+    default: 'full'
+  output-filename:
+    description: 'Custom output filename (without extension). If not provided, uses input filename'
+    required: false
+  include-styles:
+    description: 'Include CSS styles in the HTML output'
+    required: false
+    default: 'true'
+  show-suite-info:
+    description: 'Show test suite information (for table format)'
+    required: false
+    default: 'true'
+  show-timestamps:
+    description: 'Show timestamps in the output (for table format)'
+    required: false
+    default: 'true'
+
+outputs:
+  html-content:
+    description: 'Generated HTML content (when output-type is "code")'
+  html-file-path:
+    description: 'Path to the generated HTML file (when output-type is "file")'
+  summary:
+    description: 'JSON summary of test results'
+  total-tests:
+    description: 'Total number of tests'
+  passed-tests:
+    description: 'Number of passed tests'
+  failed-tests:
+    description: 'Number of failed tests'
+  total-suites:
+    description: 'Total number of test suites'
+  total-time:
+    description: 'Total execution time in seconds'
+
+runs:
+  using: 'node20'
+  main: 'index.js'
