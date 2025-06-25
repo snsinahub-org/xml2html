@@ -9,7 +9,7 @@ inputs:
     description: 'Path to the XML file to convert (can be relative or absolute path)'
     required: true
   output-type:
-    description: 'Output type: "file" to generate HTML files, "code" to return HTML as output'
+    description: 'Output type: "file" to generate HTML files, "code" to return HTML as output, "both" for both file and code output'
     required: false
     default: 'file'
   output-format:

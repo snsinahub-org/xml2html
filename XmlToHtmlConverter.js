@@ -214,6 +214,105 @@ class XmlToHtmlConverter {
     }
 
     /**
+     * Converts the XML data to an HTML table with inline styles (for GitHub step summaries)
+     * @param {Object} options - Configuration options for the table
+     * @returns {string} HTML table string with inline styles
+     */
+    convertToInlineStyledTable(options = {}) {
+        const {
+            showSuiteInfo = true,
+            showTimestamps = true
+        } = options;
+
+        if (!this.testData || this.testData.length === 0) {
+            return '<p>No test data available. Please load an XML file first.</p>';
+        }
+
+        // Define inline styles
+        const tableStyle = "width: 100%; border-collapse: collapse; font-family: Arial, sans-serif; margin: 20px 0;";
+        const headerStyle = "padding: 12px; text-align: left; border: 1px solid #ddd; background-color: #f4f4f4; font-weight: bold; color: #333;";
+        const cellStyle = "padding: 12px; text-align: left; border: 1px solid #ddd;";
+        const evenRowStyle = "background-color: #f9f9f9;";
+        const testNameStyle = "font-weight: 500; max-width: 300px; word-wrap: break-word;";
+        const statusBaseStyle = "font-weight: bold; padding: 4px 8px; border-radius: 4px; text-align: center;";
+        const statusPassedStyle = statusBaseStyle + " background-color: #d4edda; color: #155724;";
+        const statusFailedStyle = statusBaseStyle + " background-color: #f8d7da; color: #721c24;";
+        const statusErrorStyle = statusBaseStyle + " background-color: #fff3cd; color: #856404;";
+        const statusSkippedStyle = statusBaseStyle + " background-color: #e2e3e5; color: #6c757d;";
+
+        let html = '';
+
+        // Create table with inline styles
+        html += `<table style="${tableStyle}">`;
+        
+        // Table header
+        html += '<thead><tr>';
+        if (showSuiteInfo) {
+            html += `<th style="${headerStyle}">Suite Name</th>`;
+            html += `<th style="${headerStyle}">Suite Tests</th>`;
+            html += `<th style="${headerStyle}">Suite Failures</th>`;
+            html += `<th style="${headerStyle}">Suite Time (s)</th>`;
+            if (showTimestamps) {
+                html += `<th style="${headerStyle}">Suite Timestamp</th>`;
+            }
+        }
+        html += `<th style="${headerStyle}">Test Name</th>`;
+        html += `<th style="${headerStyle}">Status</th>`;
+        html += `<th style="${headerStyle}">Test Time (s)</th>`;
+        if (showTimestamps) {
+            html += `<th style="${headerStyle}">Test Timestamp</th>`;
+        }
+        html += '</tr></thead>';
+
+        // Table body
+        html += '<tbody>';
+        this.testData.forEach((test, index) => {
+            const rowStyle = index % 2 === 0 ? cellStyle : cellStyle + evenRowStyle;
+            html += '<tr>';
+            if (showSuiteInfo) {
+                html += `<td style="${rowStyle}">${this.escapeHtml(test.suiteName)}</td>`;
+                html += `<td style="${rowStyle}">${test.suiteTests}</td>`;
+                html += `<td style="${rowStyle}">${test.suiteFailures}</td>`;
+                html += `<td style="${rowStyle}">${test.suiteTime}</td>`;
+                if (showTimestamps) {
+                    html += `<td style="${rowStyle}">${this.escapeHtml(test.suiteTimestamp)}</td>`;
+                }
+            }
+            html += `<td style="${rowStyle + testNameStyle}">${this.escapeHtml(test.testName)}</td>`;
+            
+            // Status cell with appropriate styling
+            let statusStyle = rowStyle;
+            switch (test.status.toLowerCase()) {
+                case 'passed':
+                    statusStyle = statusPassedStyle;
+                    break;
+                case 'failed':
+                    statusStyle = statusFailedStyle;
+                    break;
+                case 'error':
+                    statusStyle = statusErrorStyle;
+                    break;
+                case 'skipped':
+                    statusStyle = statusSkippedStyle;
+                    break;
+                default:
+                    statusStyle = rowStyle + statusBaseStyle;
+            }
+            html += `<td style="${statusStyle}">${test.status}</td>`;
+            
+            html += `<td style="${rowStyle}">${test.testTime}</td>`;
+            if (showTimestamps) {
+                html += `<td style="${rowStyle}">${this.escapeHtml(test.testTimestamp)}</td>`;
+            }
+            html += '</tr>';
+        });
+        html += '</tbody>';
+        html += '</table>';
+
+        return html;
+    }
+
+    /**
      * Generates CSS styles for the table
      * @param {string} tableClass - The CSS class name for the table
      * @returns {string} CSS styles

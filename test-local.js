@@ -9,7 +9,7 @@ const mockCore = {
   getInput: (name, options = {}) => {
     const inputs = {
       'xml-file': './sample-test-results.xml',
-      'output-type': 'file',
+      'output-type': 'both',
       'output-format': 'full',
       'output-filename': 'local-test-report',
       'include-styles': 'true',

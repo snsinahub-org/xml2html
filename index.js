@@ -75,29 +75,13 @@ async function run() {
         break;
     }
 
-    if (outputType === 'code') {
+    if (outputType === 'code' || outputType === 'both') {
       // Return HTML as output
       core.setOutput('html-content', htmlContent);
       core.info('HTML content generated and set as output');
-      
-      // Add to step summary
-      await core.summary
-        .addHeading('🧪 Test Results Summary')
-        .addTable([
-          [
-            { data: 'Metric', header: true },
-            { data: 'Value', header: true }
-          ],
-          ['Total Tests', summary.totalTests.toString()],
-          ['Passed', summary.passed.toString()],
-          ['Failed', summary.failed.toString()],
-          ['Total Suites', summary.totalSuites.toString()],
-          ['Total Time', `${summary.totalTime}s`]
-        ])
-        .addDetails('📊 Full HTML Report', htmlContent)
-        .write();
+    }
 
-    } else if (outputType === 'file' || outputFormat === 'all') {
+    if (outputType === 'file' || outputType === 'both' || outputFormat === 'all') {
       // Generate file(s)
       const baseName = customOutputFilename || path.basename(xmlFile, path.extname(xmlFile));
       
@@ -135,24 +119,37 @@ async function run() {
         core.setOutput('html-file-path', fileName);
         core.info(`Generated HTML file: ${fileName}`);
       }
-
-      // Add summary to step output
-      await core.summary
-        .addHeading('🧪 Test Results Summary')
-        .addTable([
-          [
-            { data: 'Metric', header: true },
-            { data: 'Value', header: true }
-          ],
-          ['Total Tests', summary.totalTests.toString()],
-          ['Passed', summary.passed.toString()],
-          ['Failed', summary.failed.toString()],
-          ['Total Suites', summary.totalSuites.toString()],
-          ['Total Time', `${summary.totalTime}s`],
-          ['Suite Names', summary.suites.join(', ')]
-        ])
-        .write();
     }
+
+    // Add summary to step output (for all output types)
+    await core.summary
+      .addHeading('🧪 Test Results Summary')
+      .addTable([
+        [
+          { data: 'Metric', header: true },
+          { data: 'Value', header: true }
+        ],
+        ['Total Tests', summary.totalTests.toString()],
+        ['Passed', summary.passed.toString()],
+        ['Failed', summary.failed.toString()],
+        ['Total Suites', summary.totalSuites.toString()],
+        ['Total Time', `${summary.totalTime}s`],
+        ['Suite Names', summary.suites.join(', ')]
+      ]);
+
+    // Add HTML preview only for code or both output types
+    if (outputType === 'code' || outputType === 'both') {
+      // Generate inline-styled table for step summary (GitHub compatible)
+      const inlineStyledTable = converter.convertToInlineStyledTable({
+        showSuiteInfo: showSuiteInfo,
+        showTimestamps: showTimestamps
+      });
+      
+      await core.summary
+        .addDetails('📊 Test Results Table', inlineStyledTable);
+    }
+    
+    await core.summary.write();
 
     core.info('✅ XML to HTML conversion completed successfully!');
 
